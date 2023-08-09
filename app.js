@@ -2,7 +2,10 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
-const decrypt = require("./utils/decrypt");
+const pino = require('pino')
+const pretty = require('pino-pretty')
+const logger = pino(pretty())
+
 const encrypt = require("./utils/encrypt");
 const isDiscordUserId = require("./utils/isDiscordUserId");
 const removeFileExtension = require("./utils/removeFileExtension");
@@ -64,14 +67,15 @@ app.get("/connections", (req, res) => {
   })
 })
 
+logger.info("Handling connections...");
 fs.readdirSync("./connections").forEach(file => {
   app.all(`/connections/${removeFileExtension(file)}`, require(`./connections/${file}`));
+  logger.info(`${file} loaded.`);
 })
 
-/* app.post("/connections", (req, res) => {
-
-}) */
-
 app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server started on port ${process.env.PORT || 3000}`);
+    logger.info(`Server started on port ${process.env.PORT || 3000}`);
+    if (process.env.APIKEY === "ui2P8GrL75") logger.warn("APIKEY is still default, please change it in .env file");
+    if (process.env.AESKEY === "MrJ73Gp94g") logger.warn("AESKEY is still default, please change it in .env file");
+    if (process.env.DB_PATH === "./db.example.json") logger.warn("DB_PATH is still default, please change it in .env file");
 });
