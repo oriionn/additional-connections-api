@@ -1,40 +1,13 @@
 const express = require('express');
 const app = express();
+app.use(express.json());
 
-const crypto = require("crypto");
+const decrypt = require("./utils/decrypt");
+const encrypt = require("./utils/encrypt");
+const isDiscordUserId = require("./utils/isDiscordUserId");
+const removeFileExtension = require("./utils/removeFileExtension");
 const fs = require("fs");
 require("dotenv").config();
-
-function encrypt(text) {
-  const algorithm = 'aes-256-cbc';
-  const key = crypto.scryptSync(process.env.AESKEY,'salt', 32);
-  const iv = Buffer.alloc(16, 0);
-
-  const cipher = crypto.createCipheriv(algorithm, key, iv);
-
-  let encrypted = cipher.update(text, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-
-  return encrypted;
-}
-
-function decrypt(encryptedText) {
-  const algorithm = 'aes-256-cbc';
-  const key = crypto.scryptSync(process.env.AESKEY, 'salt', 32);
-  const iv = Buffer.alloc(16, 0);
-
-  const decipher = crypto.createDecipheriv(algorithm, key, iv);
-
-  let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-
-  return decrypted;
-}
-
-function isDiscordUserId(id) {
-  const discordIdRegex = /^[0-9]{17,20}$/;
-  return discordIdRegex.test(id);
-}
 
 app.get('/', (req, res) => {
     res.json({
@@ -68,32 +41,36 @@ app.get("/getUserKey", (req, res) => {
 });
 
 app.get("/connections", (req, res) => {
-  let token = req.query.token;
-  if (token === undefined) return res.status(400).json({
+  let id = req.query.id;
+  if (id === undefined) return res.status(400).json({
     status: 400,
     message: "Bad Request"
   });
 
-  let userId = decrypt(token);
-  if (isDiscordUserId(userId) === false) return res.status(400).json({
+  if (isDiscordUserId(id) === false) return res.status(400).json({
     status: 400,
     message: "Bad Request"
   })
 
   let db = JSON.parse(fs.readFileSync(process.env.DB_PATH));
-  if (!db[userId]) {
-    db[userId] = {
-      connections: {}
-    }
+  if (!db[id]) {
+    db[id] = {}
     fs.writeFileSync(process.env.DB_PATH, JSON.stringify(db));
   }
 
   res.json({
     status: 200,
-    message: db[userId].connections
+    message: db[id]
   })
 })
 
+fs.readdirSync("./connections").forEach(file => {
+  app.post(`/connections/${removeFileExtension(file)}`, require(`./connections/${file}`));
+})
+
+/* app.post("/connections", (req, res) => {
+
+}) */
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server started on port ${process.env.PORT || 3000}`);
