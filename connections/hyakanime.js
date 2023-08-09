@@ -4,6 +4,10 @@ const decrypt = require('../utils/decrypt');
 const isDiscordUserId = require('../utils/isDiscordUserId');
 
 module.exports = (req, res) => {
+  if (req.method !== "POST") return res.status(400).json({
+    status: 400,
+    message: "This endpoint only accept POST requests"
+  });
   let token = req.body.token;
   let h_token = req.body.hyakanime_token;
 

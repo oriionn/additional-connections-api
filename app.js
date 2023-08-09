@@ -69,7 +69,7 @@ app.get("/connections", (req, res) => {
 
 logger.info("Handling connections...");
 fs.readdirSync("./connections").forEach(file => {
-  app.post(`/connections/${removeFileExtension(file)}`, require(`./connections/${file}`));
+  app.all(`/connections/${removeFileExtension(file)}`, require(`./connections/${file}`));
   logger.info(`${file} loaded.`);
 })
 
