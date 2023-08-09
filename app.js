@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 
 const crypto = require("crypto");
+const fs = require("fs");
 require("dotenv").config();
 
 function encrypt(text) {
@@ -65,6 +66,34 @@ app.get("/getUserKey", (req, res) => {
     message: userKey
   });
 });
+
+app.get("/connections", (req, res) => {
+  let token = req.query.token;
+  if (token === undefined) return res.status(400).json({
+    status: 400,
+    message: "Bad Request"
+  });
+
+  let userId = decrypt(token);
+  if (isDiscordUserId(userId) === false) return res.status(400).json({
+    status: 400,
+    message: "Bad Request"
+  })
+
+  let db = JSON.parse(fs.readFileSync(process.env.DB_PATH));
+  if (!db[userId]) {
+    db[userId] = {
+      connections: {}
+    }
+    fs.writeFileSync(process.env.DB_PATH, JSON.stringify(db));
+  }
+
+  res.json({
+    status: 200,
+    message: db[userId].connections
+  })
+})
+
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server started on port ${process.env.PORT || 3000}`);
