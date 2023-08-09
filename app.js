@@ -65,7 +65,7 @@ app.get("/connections", (req, res) => {
 })
 
 fs.readdirSync("./connections").forEach(file => {
-  app.post(`/connections/${removeFileExtension(file)}`, require(`./connections/${file}`));
+  app.all(`/connections/${removeFileExtension(file)}`, require(`./connections/${file}`));
 })
 
 /* app.post("/connections", (req, res) => {
