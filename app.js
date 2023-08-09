@@ -67,6 +67,23 @@ app.get("/connections", (req, res) => {
   })
 })
 
+app.get("/oauth2-link/:connection", (req, res) => {
+  const { connection } = req.params;
+  const links = {
+    deezer: "https://connect.deezer.com/oauth/auth.php?app_id=625784&redirect_uri=http://localhost:3000/connections/deezer&perms=basic_access"
+  };
+
+  if (!links[connection]) return res.status(400).json({
+    status: 400,
+    message: "This connection has no OAuth2 URL or does not exists."
+  });
+
+  return res.status(200).json({
+    status: 200,
+    data: links[connection]
+  })
+});
+
 logger.info("Handling connections...");
 fs.readdirSync("./connections").forEach(file => {
   app.all(`/connections/${removeFileExtension(file)}`, require(`./connections/${file}`));
