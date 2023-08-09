@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
 
 const pino = require('pino')
 const pretty = require('pino-pretty')
@@ -68,9 +70,13 @@ app.get("/connections", (req, res) => {
 })
 
 app.get("/oauth2-link/:connection", (req, res) => {
+  if(!process.env.DEEZER_APPID || !process.env.DEEZER_SECRET) return res.status(500).json({
+    status: 500,
+    message: "Deezer is not enable on this server."
+  });
   const { connection } = req.params;
   const links = {
-    deezer: "https://connect.deezer.com/oauth/auth.php?app_id=625784&redirect_uri=http://localhost:3000/connections/deezer&perms=basic_access"
+    deezer: `https://connect.deezer.com/oauth/auth.php?app_id=${process.env.DEEZER_APPID}&redirect_uri=${process.env.DEEZER_REDIRECT_URI}&perms=basic_access`
   };
 
   if (!links[connection]) return res.status(400).json({
@@ -86,7 +92,9 @@ app.get("/oauth2-link/:connection", (req, res) => {
 
 logger.info("Handling connections...");
 fs.readdirSync("./connections").forEach(file => {
+  if (!file.endsWith(".js")) return;
   app.all(`/connections/${removeFileExtension(file)}`, require(`./connections/${file}`));
+  if (removeFileExtension(file) === "deezer") if (!process.env.DEEZER_APPID || !process.env.DEEZER_SECRET) return logger.warn("Deezer is not enable on this server.");
   logger.info(`${file} loaded.`);
 })
 

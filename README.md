@@ -23,8 +23,11 @@ cp .env.example .env
 PORT=3000
 AESKEY=zsc5MV834CLAwm6Gj47FrE23pM4buzVi7296AZ3p383M3uZVCHMYd9dWauUccEJ9Y2j8qiUikk2DG8mVB58593K524acY7qC8DivGQbknzWf3Nd227udK2UUpK9yL58w
 APIKEY=gVn6vTDz4sfNR2t99Kspm8i9sd436dy4ee5M7Q3Y73Nkz7jvhzTRy226R8433cE3naydjGUsSMN5P6X2hR8cWZ336X75BnUYdQsVpzGuM99zE6F84Am7h3J8yFNSQ2TU
-
 DB_PATH=./db.json
+
+DEEZER_APPID=
+DEEZER_SECRET=
+DEEZER_REDIRECT_URI=http://localhost:3000/connections/deezer
 ```
 6. Copy db.json.example file and rename it to db.json
 ```bash
