@@ -1,6 +1,10 @@
 # Better Connections API
 Better connections is a simple API for Better Connections Bot
 
+## Connection available
+- Hyakanime
+- Deezer
+
 ## Installation
 1. Clone the repository
 ```bash
@@ -83,6 +87,18 @@ PS: Other parameters can be required depending on the connection
 {
   "status": 200,
   "message": "OK"
+}
+```
+PS: Response depending on the connection
+
+### GET /oauth2-link/:connection
+#### Connection available
+- Deezer
+#### Response
+```json
+{
+  "status": 200,
+  "message": "(Oauth Link)"
 }
 ```
 

@@ -86,7 +86,7 @@ app.get("/oauth2-link/:connection", (req, res) => {
 
   return res.status(200).json({
     status: 200,
-    data: links[connection]
+    message: links[connection]
   })
 });
 
