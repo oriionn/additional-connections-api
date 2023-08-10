@@ -76,7 +76,7 @@ npm start
   "message": { "hyakanime": { "username": "user", "link": "https://hyakanime.fr/profile/user" } }
 }
 ```
-### POST /connections/:connection
+### ALL /connections/:connection
 #### Body parameters
 | Parameters | Type     | Description                     |
 |------------|----------|---------------------------------|
@@ -90,6 +90,19 @@ PS: Other parameters can be required depending on the connection
 }
 ```
 PS: Response depending on the connection
+
+### DELETE /connections/:connection
+#### Body parameters
+| Parameters | Type     | Description                     |
+| `token`    | `string` | Better connections's user's token |
+
+#### Response
+```json 
+{
+  "status": 200,
+  "message": "OK"
+}
+```
 
 ### GET /oauth2-link/:connection
 #### Connection available
