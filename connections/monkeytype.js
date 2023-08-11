@@ -42,6 +42,11 @@ module.exports = (req, res) => {
         status: 200,
         message: "OK"
       })
+    }).catch((err) => {
+        res.status(400).json({
+            status: 400,
+            message: "Bad Request"
+        });
     })
   } else if (req.method.toLowerCase() === "delete") {
     let token = req.body.token;
