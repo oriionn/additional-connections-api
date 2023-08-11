@@ -95,6 +95,7 @@ PS: Response depending on the connection
 ### DELETE /connections/:connection
 #### Body parameters
 | Parameters | Type     | Description                     |
+|------------|----------|---------------------------------|
 | `token`    | `string` | Better connections's user's token |
 
 #### Response
