@@ -4,6 +4,7 @@ Better connections is a simple API for Better Connections Bot
 ## Connection available
 - Hyakanime
 - Deezer
+- Monkeytype
 
 ## Installation
 1. Clone the repository
