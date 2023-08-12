@@ -35,7 +35,7 @@ module.exports = (req, res) => {
         message: "Bad Request"
       });
 
-      db[id].mangacollec = { username: username, link: `https://www.mangacollec.com/user/${username}` };
+      db[id].mangacollec = { username: username, link: `https://www.mangacollec.com/user/${username}/collection` };
       fs.writeFileSync(process.env.DB_PATH, JSON.stringify(db));
       res.json({
         status: 200,
