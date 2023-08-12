@@ -14,6 +14,7 @@ const encrypt = require("./utils/encrypt");
 const isDiscordUserId = require("./utils/isDiscordUserId");
 const removeFileExtension = require("./utils/removeFileExtension");
 const fs = require("fs");
+const decrypt = require("./utils/decrypt");
 require("dotenv").config();
 
 app.get('/', (req, res) => {
@@ -92,12 +93,51 @@ app.get("/oauth2-link/:connection", (req, res) => {
   })
 });
 
+const connections = [];
 logger.info("Handling connections...");
 fs.readdirSync("./connections").forEach(file => {
   if (!file.endsWith(".js")) return;
-  app.all(`/connections/${removeFileExtension(file)}`, require(`./connections/${file}`));
+  connections.push(file);
+  let connection = require(`./connections/${file}`);
   if (removeFileExtension(file) === "deezer") if (!process.env.DEEZER_APPID || !process.env.DEEZER_SECRET) return logger.warn("Deezer is not enable on this server.");
+  if (connection.method.toLowerCase() === "get") {
+    app.get(`/connections/${removeFileExtension(file)}`, connection.execute);
+  } else if (connection.method.toLowerCase() === "post") {
+    app.post(`/connections/${removeFileExtension(file)}`, connection.execute);
+  }
   logger.info(`${file} loaded.`);
+})
+
+app.delete("/connections/:connection", (req, res) => {
+  let token = req.body.token;
+  let connection = req.params.connection;
+  if (connections.includes(`${connection}.js`) === false) return res.status(400).json({
+    status: 400,
+    message: "Bad Request"
+  });
+
+  if (token === undefined) return res.status(400).json({
+    status: 400,
+    message: "Bad Request"
+  })
+
+  let id = decrypt(token);
+  if (isDiscordUserId(id) === false) return res.status(400).json({
+    status: 400,
+    message: "Bad Request"
+  });
+
+  let db = JSON.parse(fs.readFileSync(process.env.DB_PATH));
+  if (!db[id]) {
+    db[id] = {}
+  }
+
+  db[id][connection] = undefined;
+  fs.writeFileSync(process.env.DB_PATH, JSON.stringify(db));
+  res.json({
+    status: 200,
+    message: "OK"
+  })
 })
 
 app.listen(process.env.PORT || 3000, () => {

@@ -5,8 +5,9 @@ const isDiscordUserId = require('../utils/isDiscordUserId');
 
 require("dotenv").config();
 
-module.exports = (req, res) => {
-  if (req.method.toLowerCase() === "get") {
+module.exports = {
+  method: "GET",
+  execute: (req, res) => {
     let { code, token } = req.query;
 
     if (!code) return res.status(400).json({
@@ -44,35 +45,5 @@ module.exports = (req, res) => {
         message: "Bad Request"
       });
     })
-  } else if (req.method.toLowerCase() === "delete") {
-    let token = req.body.token;
-
-    if (token === undefined) return res.status(400).json({
-      status: 400,
-      message: "Bad Request"
-    })
-
-    let id = decrypt(token);
-    if (isDiscordUserId(id) === false) return res.status(400).json({
-      status: 400,
-      message: "Bad Request"
-    });
-
-    let db = JSON.parse(fs.readFileSync(process.env.DB_PATH));
-    if (!db[id]) {
-      db[id] = {}
-    }
-
-    db[id].deezer = undefined;
-    fs.writeFileSync(process.env.DB_PATH, JSON.stringify(db));
-    res.json({
-        status: 200,
-        message: "OK"
-    })
-  } else {
-    return res.status(400).json({
-      status: 400,
-      message: "This endpoint only accept GET requests"
-    });
   }
 }
