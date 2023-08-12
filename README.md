@@ -1,19 +1,20 @@
-# Better Connections API
-Better connections is a simple API for Better Connections Bot
+# Additional Connections API
+Additional connections is a simple API for Additional Connections Bot
 
 ## Connection available
 - Hyakanime
 - Deezer
 - Monkeytype
+- Mangacollec
 
 ## Installation
 1. Clone the repository
 ```bash
-git clone https://github.com/oriionn/better-connections-api.git
+git clone https://github.com/oriionn/additional-connections-api.git
 ```
 2. Go to the project directory
 ```bash
-cd better-connections-api
+cd additional-connections-api
 ```
 3. Install dependencies
 ```bash
@@ -118,7 +119,7 @@ PS: Response depending on the connection
 ```
 
 ## Contributors
-![Contributors](https://contrib.rocks/image?repo=oriionn/better-connections-api)
+![Contributors](https://contrib.rocks/image?repo=oriionn/additional-connections-api)
 
 ## License
 [GPL3](https://github.com/oriionn/better-connections-api/blob/main/LICENSE)

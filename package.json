@@ -1,5 +1,5 @@
 {
-  "name": "better-connections-api",
+  "name": "additional-connections-api",
   "version": "1.0.0",
   "scripts": {
     "start": "node app.js",
